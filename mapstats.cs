@@ -11,6 +11,7 @@ class replaystats {
 	 * @type {Hashtable}
 	 */
 	public static Hashtable maps = new Hashtable() {
+		{"00", "Tutorial"},
 		{"01", "Karelien"},
 		{"02", "Malinovka"},
 		{"03", "Provinz"},
@@ -25,7 +26,7 @@ class replaystats {
 		{"14", "Siegfriedlinie"},
 		{"15", "Komarin"},
 		{"17", "Weitpark"},
-		{"18", "Klippen"},
+		{"18", "Klippe"},
 		{"19", "Kloster"},
 		{"22", "Moor"},
 		{"23", "Westfield"},
@@ -34,26 +35,28 @@ class replaystats {
 		{"31", "Flugplatz"},
 		{"33", "Fjorde"},
 		{"34", "Redshire"},
-		{"35", "Steppen"},
+		{"35", "Steppe"},
 		{"36", "Fischerbucht"},
 		{"37", "Bergpass"},
 		{"38", "Polargebiet"},
 		{"39", "Südküste"},
-		{"40", "Küste"},
 		{"42", "Hafen"},
-		{"43", "Nordwesten"},
+		{"43", "Northwest"},
 		{"44", "Live Oaks"},
 		{"45", "Highway"},
 		{"47", "Küste"},
 		{"51", "Drachenkamm"},
 		{"53", "Verstecktes Dorf"},
+		{"59", "Grosse Mauer"},
 		{"60", "Perlenfluss"},
 		{"63", "Tundra"},
 		{"73", "Heiliges Tal"},
+		{"83", "Kharkov"},
 		{"84", "Windsturm"},
 		{"85", "Severogorsk"},
-		{"86", "Himmelsdorf Winter"},
-		{"87", "Ruinberg in Flammen"}
+		{"86", "Himmelsdorf im Winter"},
+		{"87", "Ruinberg in Flammen"},
+		{"96", "Feuriger Bogen"}
 	};
 
 	/**
@@ -86,7 +89,7 @@ class replaystats {
 	 */
 	public static List<string[]> readList(List<string> fileslist) {
 		List<string[]> stats = new List<string[]>();
-		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+?)_(\d{2})_(.+).wotreplay");
+		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d{2})_(.+).wotreplay");
 		foreach(string item in fileslist) {
 			if (!exp.IsMatch(item)) {
 				continue;
@@ -198,7 +201,7 @@ class replaystats {
 				Console.WriteLine("Muster:");
 				Console.WriteLine("- sowas wie zum Beispiel \"20130814*\" ist"
 					+ " für alle Replays des 14. August 2013\r\n"
-					+ "  (Doppelanführungszeichen weil manache Shells das * selber"
+					+ "  (Doppelanführungszeichen weil manche Shells das * selber"
 					+ " interpretieren wollen)");
 				Console.WriteLine("- \"*T-54*\" gibt die Mapstatistiken nur für"
 					+ " den T-54 an.");
