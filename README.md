@@ -2,7 +2,8 @@ MapStats
 ========
 
 Kleines Analysetool um ein paar Statistiken über die Mapverteilung in World of
-Tanks zu generieren. Funktioniert anhand der Replays.
+Tanks zu generieren. Funktioniert anhand der Replays. Das heißt einfach in den
+Replayordner legen und ausführen.
 
 ## Compilen
 

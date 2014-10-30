@@ -69,7 +69,7 @@ class replaystats {
 	 */
 	public static void printOut(Dictionary<string, int> dict, int sum) {
 		foreach (KeyValuePair<string, int> x in dict) {
-			Console.WriteLine("{0,-20} {1,3} ({2,4:#0.00}%)",
+			Console.WriteLine("{0,-23} {1,3} ({2,4:#0.00}%)",
 				maps[x.Key] == null ? x.Key : maps[x.Key],
 				x.Value,
 				(double) x.Value / sum * 100.0
