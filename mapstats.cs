@@ -56,6 +56,7 @@ class replaystats {
 		{"85", "Severogorsk"},
 		{"86", "Himmelsdorf im Winter"},
 		{"87", "Ruinberg in Flammen"},
+		{"92", "Stalingrad"},
 		{"96", "Feuriger Bogen"}
 	};
 
