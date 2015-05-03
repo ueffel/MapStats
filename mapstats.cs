@@ -57,7 +57,8 @@ class replaystats {
 		{"86", "Himmelsdorf im Winter"},
 		{"87", "Ruinberg in Flammen"},
 		{"92", "Stalingrad"},
-		{"96", "Feuriger Bogen"}
+		{"96", "Feuriger Bogen"},
+		{"101", "Overload"}
 	};
 
 	/**
@@ -90,7 +91,7 @@ class replaystats {
 	 */
 	public static List<string[]> readList(List<string> fileslist) {
 		List<string[]> stats = new List<string[]>();
-		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d{2})_(.+).wotreplay");
+		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d+)_(.+).wotreplay");
 		foreach(string item in fileslist) {
 			if (!exp.IsMatch(item)) {
 				continue;
