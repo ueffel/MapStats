@@ -6,10 +6,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 class replaystats {
-	/**
-	 * Maps all the numbers in replay file names to map names
-	 * @type {Hashtable}
-	 */
+	/// <summary>
+	/// Hashtable that Maps all the numbers in replay file names to map names
+	/// </summary>
 	public static Hashtable maps = new Hashtable() {
 		{"00", "Tutorial"},
 		{"01", "Karelien"},
@@ -61,14 +60,13 @@ class replaystats {
 		{"101", "Overload"}
 	};
 
-	/**
-	 * Helper function to do the formated output
-	 *
-	 * @param dict Dictionary<string, int> with (Key, Value) = (map name, number
-	 *     of battles)
-	 * @param sum int sum of all battles in the dict.
-	 *
-	 */
+	/// <summary>
+	/// Helper function to do the formated output
+	/// </summary>
+	///
+	/// <param name="dict">Dictionary&lt;string, int&gt; with
+	/// (Key, Value) = (map name, number of battles)</param>
+	/// <param name="sum">int sum of all battles in the dict.</param>
 	public static void printOut(Dictionary<string, int> dict, int sum) {
 		foreach (KeyValuePair<string, int> x in dict) {
 			Console.WriteLine("{0,-23} {1,3} ({2,4:#0.00}%)",
@@ -79,16 +77,17 @@ class replaystats {
 		}
 	}
 
-	/**
-	 * Parse the list of replay filenames to a list of arrays of strings. Every
-	 * array has 4 fields (time, nation, tank, map) that are extracted via
-	 * regular expression.
-	 *
-	 * @param fileslist List<string> of replay names to parse
-	 *
-	 * @return List<string[]> of 4 fields (s.a) for each replay name that was
-	 *     parsed
-	 */
+	/// <summary>
+	/// Parse the list of replay filenames to a list of arrays of strings. Every
+	/// array has 4 fields (time, nation, tank, map) that are extracted via
+	/// regular expression.
+	/// </summary>
+	///
+	/// <param name="fileslist">List&lt;string&gt; of replay names to parse
+	/// </param>
+	///
+	/// <returns>List&lt;string[]&gt; of 4 fields (s.a) for each replay name
+	///	that was parsed</returns>
 	public static List<string[]> readList(List<string> fileslist) {
 		List<string[]> stats = new List<string[]>();
 		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d+)_(.+).wotreplay");
@@ -112,17 +111,18 @@ class replaystats {
 		return stats;
 	}
 
-	/**
-	 * Takes a list with an array of 4 string fields (time, nation, tank, map)
-	 * and groups them into a Dictionary with the provided groups. First a key
-	 * for every group is constructed and then for each group the battles are
-	 * counted.
-	 *
-	 * @param battles List<string[]> battles to count
-	 * @param groups List<int> of groups
-	 *
-	 * @return Dictionary<string, Dictionary<string, int>>
-	 */
+	/// <summary>
+	/// Takes a list with an array of 4 string fields (time, nation, tank, map)
+	/// and groups them into a Dictionary with the provided groups. First a key
+	/// for every group is constructed and then for each group the battles are
+	/// counted.
+	/// </summary>
+	///
+	/// <param  name="battles">List&lt;string[]&gt; battles to count</param>
+	/// <param  name="groups">List&lt;int&gt; of groups</param>
+	///
+	/// <returns>Dictionary&lt;string, Dictionary&lt;string, int&gt;&gt;
+	/// </returns>
 	public static Dictionary<string, Dictionary<string, int>> groupbattles(List<string[]> battles,
 			List<int> groups) {
 		Dictionary<string, Dictionary<string, int>> result
