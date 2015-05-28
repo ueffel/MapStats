@@ -56,8 +56,11 @@ class replaystats {
 		{"86", "Himmelsdorf im Winter"},
 		{"87", "Ruinberg in Flammen"},
 		{"92", "Stalingrad"},
+		{"95", "Geisterstadt"},
 		{"96", "Feuriger Bogen"},
-		{"101", "Overload"}
+		{"100", "Mittengard"},
+		{"101", "Overlord"},
+		{"103", "Winterberg"}
 	};
 
 	/// <summary>
