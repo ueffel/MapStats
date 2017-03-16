@@ -5,11 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-class replaystats {
+class replaystats
+{
 	/// <summary>
 	/// Hashtable that Maps all the numbers in replay file names to map names
 	/// </summary>
-	public static Hashtable maps = new Hashtable() {
+	public static Hashtable maps = new Hashtable()
+	{
 		{"00", "Tutorial"},
 		{"01", "Karelien"},
 		{"02", "Malinovka"},
@@ -70,7 +72,8 @@ class replaystats {
 	/// <param name="dict">Dictionary&lt;string, int&gt; with
 	/// (Key, Value) = (map name, number of battles)</param>
 	/// <param name="sum">int sum of all battles in the dict.</param>
-	public static void printOut(Dictionary<string, int> dict, int sum) {
+	public static void printOut(Dictionary<string, int> dict, int sum)
+	{
 		foreach (KeyValuePair<string, int> x in dict) {
 			Console.WriteLine("{0,-23} {1,3} ({2,4:#0.00}%)",
 				maps[x.Key] == null ? x.Key : maps[x.Key],
@@ -80,176 +83,109 @@ class replaystats {
 		}
 	}
 
-	/// <summary>
-	/// Parse the list of replay filenames to a list of arrays of strings. Every
-	/// array has 4 fields (time, nation, tank, map) that are extracted via
-	/// regular expression.
-	/// </summary>
-	///
-	/// <param name="fileslist">List&lt;string&gt; of replay names to parse
-	/// </param>
-	///
-	/// <returns>List&lt;string[]&gt; of 4 fields (s.a) for each replay name
-	///	that was parsed</returns>
-	public static List<string[]> readList(List<string> fileslist) {
-		List<string[]> stats = new List<string[]>();
-		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d+)_(.+).wotreplay");
-		foreach(string item in fileslist) {
-			if (!exp.IsMatch(item)) {
-				continue;
-			}
-			Match match = exp.Match(item);
-			string[] replay = new string[4];
-			// time
-			replay[0] = match.Groups[1].Value;
-			// nation
-			replay[1] = match.Groups[2].Value;
-			// tank
-			replay[2] = match.Groups[3].Value;
-			// map
-			replay[3] = match.Groups[4].Value;
-			stats.Add(replay);
-		}
-
-		return stats;
-	}
-
-	/// <summary>
-	/// Takes a list with an array of 4 string fields (time, nation, tank, map)
-	/// and groups them into a Dictionary with the provided groups. First a key
-	/// for every group is constructed and then for each group the battles are
-	/// counted.
-	/// </summary>
-	///
-	/// <param  name="battles">List&lt;string[]&gt; battles to count</param>
-	/// <param  name="groups">List&lt;int&gt; of groups</param>
-	///
-	/// <returns>Dictionary&lt;string, Dictionary&lt;string, int&gt;&gt;
-	/// </returns>
-	public static Dictionary<string, Dictionary<string, int>> groupbattles(List<string[]> battles,
-			List<int> groups) {
-		Dictionary<string, Dictionary<string, int>> result
-			= new Dictionary<string, Dictionary<string, int>>();
-		string key = "";
-
-		foreach(string[] battle in battles) {
-			// construct a artificial grouping key for the dict
-			key = groups.Count == 0 ? "alles" : "";
-			foreach(int g in groups) {
-				key += " " + battle[g];
-			}
-
-			if (result.ContainsKey(key)) {
-				Dictionary<string, int> mapcount = result[key];
-				if (mapcount.ContainsKey(battle[3])) {
-					mapcount[battle[3]]++;
-				}
-				else {
-					mapcount.Add(battle[3], 1);
-				}
-				result[key] = mapcount;
-			}
-			else {
-				Dictionary<string, int> mapcount = new Dictionary<string, int>();
-				mapcount.Add(battle[3], 1);
-				result.Add(key, mapcount);
-			}
-		}
-
-		return result;
-	}
-
-	public static void Main(string[] args) {
+	public static void Main(string[] args)
+	{
 		List<string> fileslist = new List<string>();
 		List<string> paths     = new List<string>();
 		List<int>    groups    = new List<int>();
 		List<string> patterns  = new List<string>(){"*"};
 
 		// process commandline parameter
-		for(int i = 0; i < args.Length; i++) {
+		for(int i = 0; i < args.Length; i++)
+		{
 			// take care of the pattens parameter
-			switch (args[i]) {
-			case "-p":
-			case "--pattern":
-				patterns.Add(args[i+1]);
-				i++;
-				break;
-			// take care of groups
-			case "-g":
-			case "--group":
-				switch (args[i+1]) {
-				case "time":
-					groups.Add(0);
+			switch (args[i])
+			{
+				case "-p":
+				case "--pattern":
+					patterns.Add(args[i+1]);
+					i++;
 					break;
-				case "nation":
-					groups.Add(1);
+				// take care of groups
+				case "-g":
+				case "--group":
+					switch (args[i+1])
+					{
+						case "time":
+							groups.Add(0);
+							break;
+						case "nation":
+							groups.Add(1);
+							break;
+						case "tank":
+							groups.Add(2);
+							break;
+						default:
+							Console.WriteLine("'" + args[i+1] + "' als Gruppierungsattribut"
+								+ " kenne ich nicht, versuch mal 'mapstats --help'");
+							return;
+					}
+					i++;
 					break;
-				case "tank":
-					groups.Add(2);
-					break;
-				default:
-					Console.WriteLine("'" + args[i+1] + "' als Gruppierungsattribut"
-						+ " kenne ich nicht, versuch mal 'mapstats --help'");
+				// display help message
+				case "-h":
+				case "--help":
+					Console.WriteLine("Benutzung: mapstats [Optionen] [Ordnerpfade]");
+					Console.WriteLine("Optionen:");
+					Console.WriteLine(" -p, --pattern MUSTER");
+					Console.WriteLine(" -g, --group   GRUPPIERUNGSATTRIBUT");
+					Console.WriteLine("     --help    Zeigt diese Hilfe an");
+					Console.WriteLine();
+					Console.WriteLine("Muster:");
+					Console.WriteLine("- sowas wie zum Beispiel \"20130814*\" ist"
+						+ " für alle Replays des 14. August 2013\r\n"
+						+ "  (Doppelanführungszeichen weil manche Shells das * selber"
+						+ " interpretieren wollen)");
+					Console.WriteLine("- \"*T-54*\" gibt die Mapstatistiken nur für"
+						+ " den T-54 an.");
+					Console.WriteLine();
+					Console.WriteLine("Gruppierungsattribut:");
+					Console.WriteLine("- kann 'nation', 'tank' oder 'time' sein."
+						+ " (bei 'time' wird Tagweise gruppiert)");
+					Console.WriteLine();
+					Console.WriteLine("- \"erwartete Gefechte\" in der Ausgabe meint"
+						+ " die Anzahl der Gefechte bei\r\n"
+						+ "  Gleichverteilung der Maps ({0} Maps, ohne Provinz & "
+						+ "Weitpark), also so etwa {1:0.00}%", maps.Count - 2, 100.0 / (maps.Count - 2));
 					return;
-				}
-				i++;
-				break;
-			// display help message
-			case "-h":
-			case "--help":
-				Console.WriteLine("Benutzung: mapstats [Optionen] [Ordnerpfade]");
-				Console.WriteLine("Optionen:");
-				Console.WriteLine(" -p, --pattern MUSTER");
-				Console.WriteLine(" -g, --group   GRUPPIERUNGSATTRIBUT");
-				Console.WriteLine("     --help    Zeigt diese Hilfe an");
-				Console.WriteLine();
-				Console.WriteLine("Muster:");
-				Console.WriteLine("- sowas wie zum Beispiel \"20130814*\" ist"
-					+ " für alle Replays des 14. August 2013\r\n"
-					+ "  (Doppelanführungszeichen weil manche Shells das * selber"
-					+ " interpretieren wollen)");
-				Console.WriteLine("- \"*T-54*\" gibt die Mapstatistiken nur für"
-					+ " den T-54 an.");
-				Console.WriteLine();
-				Console.WriteLine("Gruppierungsattribut:");
-				Console.WriteLine("- kann 'nation', 'tank' oder 'time' sein."
-					+ " (bei 'time' wird Tagweise gruppiert)");
-				Console.WriteLine();
-				Console.WriteLine("- \"erwartete Gefechte\" in der Ausgabe meint"
-					+ " die Anzahl der Gefechte bei\r\n"
-					+ "  Gleichverteilung der Maps ({0} Maps, ohne Provinz & "
-					+ "Weitpark), also so etwa {1:0.00}%", maps.Count - 2, 100.0 / (maps.Count - 2));
-				return;
-			// no parameter, must be a path ;)
-			default:
-				paths.Add(args[i]);
-				break;
+				// no parameter, must be a path ;)
+				default:
+					paths.Add(args[i]);
+					break;
 			}
 		}
 
 		// if pattern was provided, remove default pattern '*'
-		if (patterns.Count > 1) {
+		if (patterns.Count > 1)
+		{
 			patterns.Remove("*");
 		}
 
 		// add all files from the path
-		foreach(string arg in paths) {
-			foreach(string pattern in patterns) {
-				if (string.IsNullOrEmpty(arg)) {
+		foreach(string arg in paths)
+		{
+			foreach(string pattern in patterns)
+			{
+				if (string.IsNullOrEmpty(arg))
+				{
 					continue;
 				}
-				try {
+				try
+				{
 					fileslist.AddRange(Directory.GetFiles(arg, pattern));
 				}
-				catch (System.IO.DirectoryNotFoundException e) {
+				catch (System.IO.DirectoryNotFoundException e)
+				{
 					Console.WriteLine("Fehler: {0}", e.Message);
 				}
 			}
 		}
 
 		// if only a pattern was provided but no path, apply pattern to cwd
-		if (fileslist.Count == 0) {
-			foreach(string pattern in patterns) {
+		if (fileslist.Count == 0)
+		{
+			foreach(string pattern in patterns)
+			{
 				fileslist.AddRange(Directory.GetFiles("./", pattern));
 			}
 		}
@@ -258,36 +194,33 @@ class replaystats {
 		fileslist = fileslist.Distinct().ToList();
 
 		// parse the filenames and group them
-		List <string[]> battles = readList(fileslist);
-		Dictionary<string, Dictionary<string, int>> stats = groupbattles(battles, groups);
+		Regex exp = new Regex(@"(\d+)_\d+_(.+?)-(.+)_(\d+)_(.+).wotreplay");
+		List<string[]> battles = fileslist.Where(file => exp.IsMatch(file))
+			.Select(file => exp.Match(file).Groups.Cast<Group>().Skip(1).Take(4).Select(g => g.Value).ToArray())
+			.ToList();
 
-		// sort outer dict
-		stats = stats.OrderBy(x => x.Key)
-			.ToDictionary(x => x.Key, x => x.Value);
-
-		// sort inner dict
-		Dictionary<string, Dictionary<string, int>> statstemp
-			= new Dictionary<string, Dictionary<string, int>>();
-		Dictionary<string, int> sums = new Dictionary<string, int>();
-		foreach(string key in stats.Keys) {
-			statstemp.Add(key, stats[key].OrderByDescending(x => x.Value)
-				.ToDictionary(x => x.Key, x => x.Value));
-			int sum = 0;
-			foreach(int count in stats[key].Values) {
-				sum += count;
-			}
-			sums.Add(key, sum);
-		}
-		stats = statstemp;
+		Dictionary<string, Dictionary<string, int>> stats = battles
+			.GroupBy(battle => (groups.Count == 0 ? "alles" : "")
+					+ string.Join(" ", battle.Where((battleProps, index) => groups.Contains(index))))
+			.Select(battleGroup => new {
+				key = battleGroup.Key,
+				val = battleGroup.GroupBy(battle => battle[3])
+					.OrderByDescending(battle => battle.Count())
+					.ThenBy(battle => battle.Key)
+					.ToDictionary(x => x.Key, x => x.Count()) })
+			.OrderBy(x => x.key)
+			.ToDictionary(x => x.key, x => x.val);
 
 		// print that shit
-		foreach(KeyValuePair<string, Dictionary<string, int>> dict in stats) {
+		foreach(KeyValuePair<string, Dictionary<string, int>> dict in stats)
+		{
+			int sum = dict.Value.Sum(x => x.Value);
 			Console.WriteLine("Stats für: {0}", dict.Key);
 			Console.WriteLine("Gefechte: {0,4}\r\nerwartete Gefechte pro Map: {1,3:###0.00}",
-				sums[dict.Key],
-				sums[dict.Key] / (maps.Count - 2.0)
+				sum,
+				sum / (maps.Count - 2.0)
 			);
-			printOut(dict.Value, sums[dict.Key]);
+			printOut(dict.Value, sum);
 			Console.WriteLine("----------");
 		}
 
